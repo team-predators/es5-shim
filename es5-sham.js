@@ -418,13 +418,18 @@ if (!Object.defineProperty || definePropertyFallback) {
             }
         } else {
             if (!supportsAccessors && (('get' in descriptor) || ('set' in descriptor))) {
-                throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);
+                try {
+                    throw new TypeError(ERR_ACCESSORS_NOT_SUPPORTED);
+                } catch(e) {
+                    console && console.log(e);
+                }
             }
+
             // If we got that far then getters and setters can be defined !!
-            if ('get' in descriptor) {
+            if ('get' in descriptor && supportsAccessors) {
                 defineGetter(object, property, descriptor.get);
             }
-            if ('set' in descriptor) {
+            if ('set' in descriptor && supportsAccessors) {
                 defineSetter(object, property, descriptor.set);
             }
         }
